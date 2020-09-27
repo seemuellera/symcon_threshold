@@ -1,0 +1,14 @@
+{
+  "id": "{CF4C8B92-9279-40D1-B458-943E237CEA85}",
+  "name": "Threshold",
+  "type": 3,
+  "vendor": "Andreas",
+  "aliases": 
+  [
+	  "Threshold"
+  ],
+  "parentRequirements": [],
+  "childRequirements": [],
+  "implemented": [],
+  "prefix": "THRESHOLD"
+}
