@@ -159,7 +159,7 @@ class Threshold extends IPSModule {
 	
 	protected function CheckLargerThan() {
 		
-		if (GetValue($this->ReadPropertyInteger("SourceVariable")) > $this->ReadPropertyInteger("NumericalThreshold") ) {
+		if (GetValue($this->ReadPropertyInteger("SourceVariable")) > $this->ReadPropertyFloat("NumericalThreshold") ) {
 			
 			$this->UpdateAlertState($true);
 		}
@@ -171,7 +171,7 @@ class Threshold extends IPSModule {
 	
 	protected function CheckLessThan() {
 		
-		if (GetValue($this->ReadPropertyInteger("SourceVariable")) < $this->ReadPropertyInteger("NumericalThreshold") ) {
+		if (GetValue($this->ReadPropertyInteger("SourceVariable")) < $this->ReadPropertyFloat("NumericalThreshold") ) {
 			
 			$this->UpdateAlertState($true);
 		}
