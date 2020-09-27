@@ -24,7 +24,7 @@ class Threshold extends IPSModule {
 		$this->RegisterPropertyBoolean("DebugOutput",false);
 		$this->RegisterPropertyInteger("SourceVariable",0);
 		$this->RegisterPropertyString("CompareMode","LargerThan");
-		$this->RegisterPropertyInteger("NumericalThreshold",0);
+		$this->RegisterPropertyFloat("NumericalThreshold",0);
 		$this->RegisterPropertyString("CompareText","");
 		
 		// Variables
