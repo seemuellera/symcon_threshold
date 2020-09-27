@@ -87,7 +87,7 @@ class Threshold extends IPSModule {
 								)
 							);
 		
-		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "NumericalThreshold", "caption" => "Numerical Threshold (for numerical compare modes)");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "NumericalThreshold", "caption" => "Numerical Threshold (for numerical compare modes)", digits => 3);
 		$form['elements'][] = Array("type" => "ValidationTextBox", "name" => "CompareText", "caption" => "Compare Text (for text compare modes)");
 		
 		
@@ -161,11 +161,11 @@ class Threshold extends IPSModule {
 		
 		if (GetValue($this->ReadPropertyInteger("SourceVariable")) > $this->ReadPropertyFloat("NumericalThreshold") ) {
 			
-			$this->UpdateAlertState($true);
+			$this->UpdateAlertState(true);
 		}
 		else {
 			
-			$this->UpdateAlertState($false);
+			$this->UpdateAlertState(false);
 		}
 	}
 	
@@ -173,11 +173,11 @@ class Threshold extends IPSModule {
 		
 		if (GetValue($this->ReadPropertyInteger("SourceVariable")) < $this->ReadPropertyFloat("NumericalThreshold") ) {
 			
-			$this->UpdateAlertState($true);
+			$this->UpdateAlertState(true);
 		}
 		else {
 			
-			$this->UpdateAlertState($false);
+			$this->UpdateAlertState(false);
 		}
 	}
 	
