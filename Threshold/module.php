@@ -87,7 +87,7 @@ class Threshold extends IPSModule {
 								)
 							);
 		
-		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "NumericalThreshold", "caption" => "Numerical Threshold (for numerical compare modes)", digits => 3);
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "NumericalThreshold", "caption" => "Numerical Threshold (for numerical compare modes)", "digits" => 3);
 		$form['elements'][] = Array("type" => "ValidationTextBox", "name" => "CompareText", "caption" => "Compare Text (for text compare modes)");
 		
 		
