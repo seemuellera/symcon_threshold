@@ -25,6 +25,7 @@ class Threshold extends IPSModule {
 		$this->RegisterPropertyInteger("SourceVariable",0);
 		$this->RegisterPropertyString("CompareMode","LargerThan");
 		$this->RegisterPropertyFloat("NumericalThreshold",0);
+		$this->RegisterPropertyBoolean("ExportNumericalThreshold",false);
 		$this->RegisterPropertyString("CompareText","");
 		
 		// Variables
@@ -51,6 +52,21 @@ class Threshold extends IPSModule {
 		$this->SetTimerInterval("RefreshInformation", $newInterval);
 		
 		$this->RegisterMessage($this->ReadPropertyInteger("SourceVariable"), VM_UPDATE);
+		
+		if ($this->ReadPropertyBoolean("ExportNumericalThreshold")) {
+			
+			if (! @$this->GetIDForIdent("NumericalThreshold")) {
+				
+				$this->RegisterVariableInteger("NumericalThreshold","Numerical Threshold");
+			}
+		}
+		else {
+			
+			if (! @$this->GetIDForIdent("NumericalThreshold")) {
+				
+				$this->UnregisterVariableInteger("NumericalThreshold");
+			}
+		}
 			
 		// Diese Zeile nicht löschen
 		parent::ApplyChanges();
@@ -88,6 +104,7 @@ class Threshold extends IPSModule {
 							);
 		
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "NumericalThreshold", "caption" => "Numerical Threshold (for numerical compare modes)", "digits" => 3);
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "ExportNumericalThreshold", "caption" => "Export Numerical Threshold to a variable");
 		$form['elements'][] = Array("type" => "ValidationTextBox", "name" => "CompareText", "caption" => "Compare Text (for text compare modes)");
 		
 		
