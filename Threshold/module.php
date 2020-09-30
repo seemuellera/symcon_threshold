@@ -130,6 +130,7 @@ class Threshold extends IPSModule {
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "CompareAverageValues", "caption" => "Compare Average value (for numerical compare modes)");
 		$form['elements'][] = Array("type" => "SelectInstance", "name" => "ArchiveId", "caption" => "Id of the corresponding archive");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "AverageMinutes", "caption" => "Average Timeframe in Minutes");
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "ExportAverageValues", "caption" => "Export average value to a variable");
 		
 		
 		// Add the buttons for the test center
