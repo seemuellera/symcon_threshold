@@ -27,6 +27,10 @@ class Threshold extends IPSModule {
 		$this->RegisterPropertyFloat("NumericalThreshold",0);
 		$this->RegisterPropertyBoolean("ExportNumericalThreshold",false);
 		$this->RegisterPropertyString("CompareText","");
+		$this->RegisterPropertyBoolean("CompareAverageValues",false);
+		$this->RegisterPropertyInteger("ArchiveId",0);
+		$this->RegisterPropertyInteger("AverageMinutes",5);
+		$this->RegisterPropertyBoolean("ExportAverageValues",false);
 		
 		// Variables
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
@@ -69,6 +73,21 @@ class Threshold extends IPSModule {
 				$this->UnregisterVariable("NumericalThresholdVariable");
 			}
 		}
+		
+		if ($this->ReadPropertyBoolean("ExportAverageValues")) {
+			
+			if (! @$this->GetIDForIdent("AverageValue")) {
+				
+				$this->RegisterVariableFloat("AverageValue","Average Value");
+			}
+		}
+		else {
+			
+			if (! @$this->GetIDForIdent("AverageValue")) {
+				
+				$this->UnregisterVariable("AverageValue");
+			}
+		}
 			
 		// Diese Zeile nicht löschen
 		parent::ApplyChanges();
@@ -108,6 +127,9 @@ class Threshold extends IPSModule {
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "NumericalThreshold", "caption" => "Numerical Threshold (for numerical compare modes)", "digits" => 3);
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "ExportNumericalThreshold", "caption" => "Export Numerical Threshold to a variable");
 		$form['elements'][] = Array("type" => "ValidationTextBox", "name" => "CompareText", "caption" => "Compare Text (for text compare modes)");
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "CompareAverageValues", "caption" => "Compare Average value (for numerical compare modes)");
+		$form['elements'][] = Array("type" => "SelectInstance", "name" => "ArchiveId", "caption" => "Id of the corresponding archive");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "AverageMinutes", "caption" => "Average Timeframe in Minutes");
 		
 		
 		// Add the buttons for the test center
@@ -163,22 +185,45 @@ class Threshold extends IPSModule {
 			$this->LogMessage("Threshold will not be checked because checking is deactivated","DEBUG");
 		}
 		
+		if ($this->ReadPropertyBoolean("CompareAverageValues")) {
+			
+			$startTime = time() - $this->ReadPropertyInteger("AverageMinutes") * 60;
+			$results = AC_GetAggregatedValues($this->ReadPropertyInteger("ArchiveId"), $this->ReadPropertyInteger("SourceVariable"), 6, $startTime, time(), 0);
+			
+			$averageSum = 0;
+			foreach ($results as $result) {
+				
+				$averageSum += $result['Avg'];
+			}
+			
+			$inputValue = $averageSum / count($results);
+			
+			if ($this->ReadPropertyBoolean("ExportAverageValues")) {
+				
+				SetValue($this->GetIDForIdent("AverageValue",$inputValue) );
+			}
+		}
+		else {
+			
+			$inputValue = GetValue($this->ReadPropertyInteger("SourceVariable"));
+		}
+		
 		switch ($this->ReadPropertyString("CompareMode") ) {
 			
 			case "LargerThan":
-				$this->CheckLargerThan();
+				$this->CheckLargerThan($inputValue);
 				break;
 			case "LessThan":
-				$this->CheckLessThan();
+				$this->CheckLessThan($inputValue);
 				break;
 			default:
 				$this->LogMessage("Compare mode is not implemented","ERROR");
 		}
 	}
 	
-	protected function CheckLargerThan() {
+	protected function CheckLargerThan($inputValue) {
 		
-		if (GetValue($this->ReadPropertyInteger("SourceVariable")) > $this->ReadPropertyFloat("NumericalThreshold") ) {
+		if ($inputValue > $this->ReadPropertyFloat("NumericalThreshold") ) {
 			
 			$this->UpdateAlertState(true);
 		}
@@ -188,9 +233,9 @@ class Threshold extends IPSModule {
 		}
 	}
 	
-	protected function CheckLessThan() {
+	protected function CheckLessThan($inputValue) {
 		
-		if (GetValue($this->ReadPropertyInteger("SourceVariable")) < $this->ReadPropertyFloat("NumericalThreshold") ) {
+		if ($inputValue < $this->ReadPropertyFloat("NumericalThreshold") ) {
 			
 			$this->UpdateAlertState(true);
 		}
