@@ -57,16 +57,16 @@ class Threshold extends IPSModule {
 			
 			if (! @$this->GetIDForIdent("NumericalThresholdVariable")) {
 				
-				$this->RegisterVariableInteger("NumericalThresholdVariable","Numerical Threshold");
+				$this->RegisterVariableFloat("NumericalThresholdVariable","Numerical Threshold");
 			}
 			
-			SetValue($this->GetIDForIdent("NumericalThresholdVariable"),$this->ReadPropertyInteger("NumericalThreshold"));
+			SetValue($this->GetIDForIdent("NumericalThresholdVariable"),$this->ReadPropertyFloat("NumericalThreshold"));
 		}
 		else {
 			
 			if (! @$this->GetIDForIdent("NumericalThresholdVariable")) {
 				
-				$this->UnregisterVariableInteger("NumericalThresholdVariable");
+				$this->UnregisterVariable("NumericalThresholdVariable");
 			}
 		}
 			
