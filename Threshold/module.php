@@ -201,7 +201,7 @@ class Threshold extends IPSModule {
 			
 			if ($this->ReadPropertyBoolean("ExportAverageValues")) {
 				
-				SetValue($this->GetIDForIdent("AverageValue",$inputValue) );
+				SetValue($this->GetIDForIdent("AverageValue"),$inputValue);
 			}
 		}
 		else {
