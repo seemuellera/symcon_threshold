@@ -31,6 +31,9 @@ class Threshold extends IPSModule {
 		$this->RegisterPropertyInteger("ArchiveId",0);
 		$this->RegisterPropertyInteger("AverageMinutes",5);
 		$this->RegisterPropertyBoolean("ExportAverageValues",false);
+		$this->RegisterPropertyBoolean("CheckSourceAge",false);
+		$this->RegisterPropertyInteger("MaxSourceAge",60);
+		$this->RegisterPropertyBoolean("ResultIfOutdated",false);
 		
 		// Variables
 		$this->RegisterVariableBoolean("Status","Status","~Switch");
@@ -131,7 +134,9 @@ class Threshold extends IPSModule {
 		$form['elements'][] = Array("type" => "SelectInstance", "name" => "ArchiveId", "caption" => "Id of the corresponding archive");
 		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "AverageMinutes", "caption" => "Average Timeframe in Minutes");
 		$form['elements'][] = Array("type" => "CheckBox", "name" => "ExportAverageValues", "caption" => "Export average value to a variable");
-		
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "CheckSourceAge", "caption" => "Check the age of source variable");
+		$form['elements'][] = Array("type" => "NumberSpinner", "name" => "MaxSourceAge", "caption" => "Maximum Source Age in seconds. Make sure that it is aligned with the refresh interval.");
+		$form['elements'][] = Array("type" => "CheckBox", "name" => "ResultIfOutdated", "caption" => "Value of the result if the variable is outdated (active => Alert)");	
 		
 		// Add the buttons for the test center
 		$form['actions'][] = Array(	"type" => "Button", "label" => "Refresh", "onClick" => 'THRESHOLD_RefreshInformation($id);');
@@ -184,6 +189,30 @@ class Threshold extends IPSModule {
 		if (! GetValue($this->GetIDForIdent("Status")) ) {
 			
 			$this->LogMessage("Threshold will not be checked because checking is deactivated","DEBUG");
+		}
+		
+		if ($this->ReadPropertyBoolean("CheckSourceAge")) {
+			
+			$this->LogMessage("Source age check is active","DEBUG");
+			
+			$sourceDetails = IPS_GetVariable($this->ReadPropertyInteger("SourceVariable"));
+			$tsLastUpdate = $sourceDetails['VariableUpdated'];
+			
+			if ($tsLastUpdate < (time() - $this->ReadPropertyInteger("MaxSourceAge") ) ) {
+				
+				$this->LogMessage("Source variable is outdated","DEBUG");
+				
+				if ($this->ReadPropertyBoolean("ResultIfOutdated")) {
+					
+					$this->UpdateAlertState(true);
+					return;
+				}
+				else {
+					
+					$this->UpdateAlertState(false);
+					return;
+				}
+			}
 		}
 		
 		if ($this->ReadPropertyBoolean("CompareAverageValues")) {
