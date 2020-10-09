@@ -171,6 +171,11 @@ class Threshold extends IPSModule {
 		
 			case "Status":
 				SetValue($this->GetIDForIdent($Ident), $Value);
+				// Turn alarm off when checking is deactivated.
+				if (! $Value) {
+					
+					SetValue($this->GetIDForIdent("Result"), false);
+				}
 				break;
 			default:
 				throw new Exception("Invalid Ident");
