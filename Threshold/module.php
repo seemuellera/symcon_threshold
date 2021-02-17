@@ -123,6 +123,10 @@ class Threshold extends IPSModule {
 									Array(
 										"caption" => "LessThan (numerical compare) - Result is Alarm if the variable value is less than the threshold",
 										"value" => "LessThan"
+									),
+									Array(
+										"caption" => "IsEqual (numerical compare) - Result is Alarm if the variable value is the same value than the threshold",
+										"value" => "IsEqual"
 									)
 								)
 							);
@@ -251,6 +255,9 @@ class Threshold extends IPSModule {
 			case "LessThan":
 				$this->CheckLessThan($inputValue);
 				break;
+			case "IsEqual":
+				$this->CheckIsEqual($inputValue);
+				break;
 			default:
 				$this->LogMessage("Compare mode is not implemented","ERROR");
 		}
@@ -271,6 +278,18 @@ class Threshold extends IPSModule {
 	protected function CheckLessThan($inputValue) {
 		
 		if ($inputValue < $this->ReadPropertyFloat("NumericalThreshold") ) {
+			
+			$this->UpdateAlertState(true);
+		}
+		else {
+			
+			$this->UpdateAlertState(false);
+		}
+	}
+	
+	protected function CheckIsEqual($inputValue) {
+		
+		if ($inputValue == $this->ReadPropertyFloat("NumericalThreshold") ) {
 			
 			$this->UpdateAlertState(true);
 		}
