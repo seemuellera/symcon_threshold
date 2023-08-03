@@ -57,6 +57,20 @@ class Threshold extends IPSModule {
 
 		$newInterval = $this->ReadPropertyInteger("RefreshInterval") * 1000;
 		$this->SetTimerInterval("RefreshInformation", $newInterval);
+
+		// Clean old references
+		$referenceList = $this->GetReferenceList();
+		foreach ($referenceList as $currentReference) {
+
+			$this->UnregisterReference($currentReference);
+		}
+
+		// Clean old message registration
+		$messagesList = $this->GetMessageList();
+		foreach ($messagesList as $currentMessage) {
+
+			$this->UnregisterMessage($currentMessage, VM_CHANGE);
+		}
 		
 		$this->RegisterMessage($this->ReadPropertyInteger("SourceVariable"), VM_UPDATE);
 		
